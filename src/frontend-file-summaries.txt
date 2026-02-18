@@ -1,6 +1,6 @@
 {
   "frontend/src/App.tsx": "Main application component that wraps the app with ThemeProvider and renders the MainPage with toast notifications.",
-  "frontend/src/pages/MainPage.tsx": "Complete single-page mindfulness application featuring daily inspirational quotes, calming gradient background, enhanced music player with track selection, volume control, current track display, and attribution display with the \"Stay Beautifully Positive\" motto prominently displayed.",
+  "frontend/src/pages/MainPage.tsx": "Single-page mindfulness application featuring daily inspirational quotes with calming gradient background and the \"Stay Beautifully Positive\" motto prominently displayed, with all music functionality removed.",
   "frontend/src/hooks/useQueries.ts": "React Query hooks for fetching daily messages, app motto, and all messages from the backend with appropriate caching strategies.",
   "frontend/src/index.css": "Custom CSS with OKLCH-based calming color palette (sky blue, lavender, rose), custom shadow utilities, and gentle animation keyframes for the mindfulness theme.",
   "frontend/tailwind.config.js": "Tailwind configuration extended with serif font family for elegant quote display and maintaining the custom design system.",

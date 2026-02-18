@@ -1,77 +1,71 @@
 {
   "kind": "build_request",
-  "title": "Add upbeat royalty-free background music options",
-  "projectName": "Positive Vibes",
+  "title": "Remove background music and music controls",
+  "projectName": "Stay Beautifully Positive",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Replace the current single hard-coded background track (/assets/relaxing-music.mp3) with a configurable set of upbeat, positive-vibe royalty-free music tracks served as static frontend assets, and update the player logic to load/play the selected track.",
+      "text": "Remove all background music playback logic from the main page, including the HTMLAudioElement creation, play/pause handling, volume handling, and track-switching side effects.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1",
-          "msg-2"
+          "msg-11"
         ],
         "quotes": [
-          "Is it possible to add royalty free music to my webside?",
-          "Upbeat and positive vibes"
+          "Remove the music, it isn't playing correctly."
         ]
       },
       "acceptanceCriteria": [
-        "The app no longer hard-codes \"/assets/relaxing-music.mp3\" as the only available track.",
-        "At least one upbeat track is referenced via a single, clearly editable track list (e.g., an array of {title, src, attribution}).",
-        "Selecting a different track (via UI added in REQ-2) switches playback to the chosen track and continues looping.",
-        "If audio playback is blocked by the browser, the app does not crash and the UI remains usable."
+        "MainPage renders and functions without creating or controlling an Audio element.",
+        "No audio starts playing (or attempts to play) when the app loads or when interacting with the page.",
+        "There are no console errors related to audio playback (e.g., 'Audio playback failed')."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Enhance the existing music controls on MainPage to support upbeat background music playback with: play/pause, volume control, and track selection; ensure all user-facing labels are in English and match an upbeat/positive tone.",
+      "text": "Remove all music-related UI from the main page, including the header play/pause button and the \"Music Controls\" panel (track selection, volume slider, now-playing status, and attribution).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2"
+          "msg-11"
         ],
         "quotes": [
-          "Upbeat and positive vibes"
+          "Remove the music, it isn't playing correctly."
         ]
       },
       "acceptanceCriteria": [
-        "The header music button still toggles play/pause.",
-        "A volume control is available and changes the playback volume immediately.",
-        "A track selector UI is available (dropdown, list, or buttons) showing track titles.",
-        "The UI indicates the current track name when music is playing.",
-        "All user-facing text related to music (e.g., status indicator) is updated from “Relaxing music playing” to wording that matches upbeat/positive vibes (in English)."
+        "The header no longer displays a play/pause music control button.",
+        "The page no longer shows the \"Music Controls\" section, track selector, volume slider, now-playing text, or attribution text.",
+        "The daily message and motto UI remain intact and centered appropriately without the removed music panel."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Add a small in-app attribution section for the included royalty-free music (e.g., track title + author/source/license text), displayed in the UI (footer or near the music controls).",
+      "text": "Remove the unused music track configuration dependency from the frontend by eliminating usage/imports of the track list used for background music.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-11"
         ],
         "quotes": [
-          "Is it possible to add royalty free music to my webside?"
+          "Remove the music, it isn't playing correctly."
         ]
       },
       "acceptanceCriteria": [
-        "For each available track, there is attribution metadata stored alongside the track configuration.",
-        "The app displays attribution text for the currently selected track in a readable but unobtrusive way.",
-        "Attribution is visible without requiring developer tools or viewing source code."
+        "MainPage no longer imports from \"frontend/src/music/tracks.ts\".",
+        "The frontend builds successfully with no unused-import or missing-module errors related to music tracks."
       ]
     }
   ],
   "constraints": [
-    "Do not modify files under frontend/src/components/ui (Shadcn UI components must be composed, not edited).",
-    "Do not modify immutable hook/entry files: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx."
+    "Do not modify files under frontend/src/components/ui (compose them only).",
+    "Do not edit any files listed in frontend.immutablePaths in SYSTEM_CONTEXT."
   ],
   "nonGoals": [
-    "Implementing third-party music streaming integrations or pulling music from external APIs.",
-    "Adding user accounts or permissions for uploading music.",
-    "Changing the daily quote rotation logic in the backend."
+    "Fixing or debugging audio playback issues.",
+    "Adding new audio tracks, streaming, or alternate audio implementations.",
+    "Changing the app’s non-music functionality (daily message, motto, theming) beyond layout adjustments needed after removing music UI."
   ],
   "imageRequirements": {
     "required": [],
@@ -80,9 +74,7 @@
   "userProfileUpdate": {
     "goalsToAdd": [],
     "goalsToRemove": [],
-    "preferencesToAdd": [
-      "Prefers upbeat and positive vibe background music."
-    ],
+    "preferencesToAdd": [],
     "preferencesToRemove": [],
     "miscToAdd": [],
     "miscToRemove": [],

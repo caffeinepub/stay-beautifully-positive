@@ -1,81 +1,57 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add upbeat royalty-free background music options",
+  "title": "Remove background music and music controls from MainPage",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Replace the single hard-coded background track with a configurable upbeat track list served as static assets, and update playback logic to load/play the selected track safely.",
+      "summary": "Remove all background music playback logic from MainPage (audio element, play/pause, volume, and track-switching side effects).",
       "acceptanceCriteria": [
-        "The app no longer hard-codes \"/assets/relaxing-music.mp3\" as the only available track.",
-        "At least one upbeat track is referenced via a single, clearly editable track list (e.g., an array of {title, src, attribution}).",
-        "Selecting a different track (via UI added in REQ-2) switches playback to the chosen track and continues looping.",
-        "If audio playback is blocked by the browser, the app does not crash and the UI remains usable."
+        "MainPage renders and functions without creating or controlling an Audio element.",
+        "No audio starts playing (or attempts to play) when the app loads or when interacting with the page.",
+        "There are no console errors related to audio playback (e.g., 'Audio playback failed')."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/music/tracks.ts",
-          "operation": "create",
-          "description": "Create a single, clearly editable track configuration list (e.g., array of { id, title, src, attribution }) referencing upbeat/positive-vibe royalty-free tracks served from frontend/public as static assets."
-        },
-        {
-          "path": "frontend/public/assets/music/positive-vibes-1.mp3",
-          "operation": "create",
-          "description": "Add an upbeat/positive-vibe royalty-free background music file as a static frontend asset referenced by frontend/src/music/tracks.ts."
-        },
-        {
-          "path": "frontend/public/assets/music/positive-vibes-2.mp3",
-          "operation": "create",
-          "description": "Add an additional upbeat/positive-vibe royalty-free background music file as a static frontend asset referenced by frontend/src/music/tracks.ts (keeps the track list configurable and demonstrably multi-track)."
-        },
-        {
           "path": "frontend/src/pages/MainPage.tsx",
           "operation": "modify",
-          "description": "Refactor audio initialization away from hard-coded '/assets/relaxing-music.mp3' to use the track list from frontend/src/music/tracks.ts; implement track switching while maintaining looping; add safe play() error handling so autoplay-block scenarios don’t crash the app and the UI remains usable."
+          "description": "Remove all HTMLAudioElement-related state/refs and side effects (audioRef, isPlaying, volume, track id, and the related useEffect hooks) and remove any play/pause handlers so no audio is created or controlled anywhere in MainPage."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Enhance MainPage music controls to include play/pause, volume control, and track selection with upbeat/positive English labels and current track indication.",
+      "summary": "Remove all music-related UI from MainPage (header control button and Music Controls panel) while keeping daily message and motto layout intact.",
       "acceptanceCriteria": [
-        "The header music button still toggles play/pause.",
-        "A volume control is available and changes the playback volume immediately.",
-        "A track selector UI is available (dropdown, list, or buttons) showing track titles.",
-        "The UI indicates the current track name when music is playing.",
-        "All user-facing text related to music (e.g., status indicator) is updated from “Relaxing music playing” to wording that matches upbeat/positive vibes (in English)."
+        "The header no longer displays a play/pause music control button.",
+        "The page no longer shows the \"Music Controls\" section, track selector, volume slider, now-playing text, or attribution text.",
+        "The daily message and motto UI remain intact and centered appropriately without the removed music panel."
       ],
       "file_operations": [
         {
           "path": "frontend/src/pages/MainPage.tsx",
           "operation": "modify",
-          "description": "Add UI for track selection (showing track titles) and volume control (immediate effect on playback); keep the header button toggling play/pause; update the status indicator copy to upbeat/positive English and include the currently playing track name; ensure UI state stays consistent when play is blocked."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "If needed, add minimal global styling utilities for native range/select controls used by the music UI so the new controls match the existing upbeat/positive visual style (do not modify any files under frontend/src/components/ui)."
+          "description": "Remove the header music Button and the entire \"Music Controls\" panel UI (including Select, Slider, now-playing status, and attribution). Update header/container layout classes as needed so the title/motto/message remain centered and visually balanced after the panel removal. Do not modify files under frontend/src/components/ui (compose them only). Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Display unobtrusive, in-app attribution for the currently selected royalty-free music track.",
+      "summary": "Eliminate the unused music track configuration dependency by removing all track list imports/usages from the frontend.",
       "acceptanceCriteria": [
-        "For each available track, there is attribution metadata stored alongside the track configuration.",
-        "The app displays attribution text for the currently selected track in a readable but unobtrusive way.",
-        "Attribution is visible without requiring developer tools or viewing source code."
+        "MainPage no longer imports from \"frontend/src/music/tracks.ts\".",
+        "The frontend builds successfully with no unused-import or missing-module errors related to music tracks."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/music/tracks.ts",
-          "operation": "modify",
-          "description": "Ensure each track entry includes complete attribution metadata (e.g., title + author/source/license text) alongside src in the single shared configuration list."
-        },
-        {
           "path": "frontend/src/pages/MainPage.tsx",
           "operation": "modify",
-          "description": "Render a small, readable but unobtrusive attribution section (near the music controls or in the footer) that updates to show attribution for the currently selected track, sourced directly from frontend/src/music/tracks.ts."
+          "description": "Remove the import of tracks from frontend/src/music/tracks.ts and delete any remaining references to tracks/currentTrack/currentTrackId so MainPage is fully independent of the music track list."
+        },
+        {
+          "path": "frontend/src/music/tracks.ts",
+          "operation": "delete",
+          "description": "Delete the now-unused background music track configuration module once no frontend code imports it, ensuring the project builds without missing-module or unused-import errors."
         }
       ]
     }

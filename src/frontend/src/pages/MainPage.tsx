@@ -1,81 +1,17 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useDailyMessage, useAppMotto } from '../hooks/useQueries';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
-import { Play, Pause, Volume2, Music } from 'lucide-react';
 import { SiCaffeine } from 'react-icons/si';
-import { tracks } from '../music/tracks';
 
 export default function MainPage() {
     const { data: dailyMessage, isLoading: messageLoading } = useDailyMessage();
     const { data: motto, isLoading: mottoLoading } = useAppMotto();
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [currentTrackId, setCurrentTrackId] = useState(tracks[0].id);
-    const [volume, setVolume] = useState(70);
     const [showContent, setShowContent] = useState(false);
-    const audioRef = useRef<HTMLAudioElement | null>(null);
-
-    const currentTrack = tracks.find(t => t.id === currentTrackId) || tracks[0];
-
-    // Initialize audio element
-    useEffect(() => {
-        const audio = new Audio(currentTrack.src);
-        audio.loop = true;
-        audio.volume = volume / 100;
-        audioRef.current = audio;
-
-        return () => {
-            audio.pause();
-            audio.currentTime = 0;
-        };
-    }, [currentTrack.src]);
-
-    // Update volume
-    useEffect(() => {
-        if (audioRef.current) {
-            audioRef.current.volume = volume / 100;
-        }
-    }, [volume]);
-
-    // Handle track changes
-    useEffect(() => {
-        if (audioRef.current && isPlaying) {
-            const audio = audioRef.current;
-            audio.pause();
-            audio.src = currentTrack.src;
-            audio.load();
-            audio.play().catch(err => {
-                console.error('Audio playback failed:', err);
-                setIsPlaying(false);
-            });
-        }
-    }, [currentTrack.src, isPlaying]);
 
     useEffect(() => {
         const timer = setTimeout(() => setShowContent(true), 300);
         return () => clearTimeout(timer);
     }, []);
-
-    const toggleMusic = () => {
-        if (!audioRef.current) return;
-
-        if (isPlaying) {
-            audioRef.current.pause();
-            setIsPlaying(false);
-        } else {
-            audioRef.current.play().catch(err => {
-                console.error('Audio playback failed:', err);
-                setIsPlaying(false);
-            });
-            setIsPlaying(true);
-        }
-    };
-
-    const handleTrackChange = (trackId: string) => {
-        setCurrentTrackId(trackId);
-    };
 
     return (
         <div className="min-h-screen relative overflow-hidden">
@@ -93,7 +29,7 @@ export default function MainPage() {
             <main className="relative z-10 min-h-screen flex flex-col">
                 {/* Header */}
                 <header className="w-full py-6 px-4 sm:px-6 lg:px-8">
-                    <div className="max-w-7xl mx-auto flex justify-between items-center">
+                    <div className="max-w-7xl mx-auto flex justify-center items-center">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-calm-sky to-calm-lavender flex items-center justify-center shadow-glow">
                                 <span className="text-white text-xl font-bold">✨</span>
@@ -102,20 +38,6 @@ export default function MainPage() {
                                 Stay Beautifully Positive
                             </h1>
                         </div>
-                        
-                        {/* Music Control */}
-                        <Button
-                            onClick={toggleMusic}
-                            variant="outline"
-                            size="icon"
-                            className="rounded-full bg-white/80 backdrop-blur-sm border-calm-sky/30 hover:bg-white hover:border-calm-sky/50 transition-all duration-300 shadow-soft"
-                        >
-                            {isPlaying ? (
-                                <Pause className="h-4 w-4 text-calm-deep" />
-                            ) : (
-                                <Play className="h-4 w-4 text-calm-deep ml-0.5" />
-                            )}
-                        </Button>
                     </div>
                 </header>
 
@@ -165,66 +87,6 @@ export default function MainPage() {
                                 <p className="text-center text-calm-deep/60">No message available</p>
                             )}
                         </Card>
-
-                        {/* Music Controls Panel */}
-                        <div className="mt-8 bg-white/60 backdrop-blur-md border border-white/40 rounded-2xl p-6 shadow-soft">
-                            <div className="flex items-center gap-2 mb-4">
-                                <Music className="h-5 w-5 text-calm-sky" />
-                                <h3 className="text-lg font-semibold text-calm-deep">Music Controls</h3>
-                            </div>
-                            
-                            <div className="space-y-4">
-                                {/* Track Selection */}
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-calm-deep/70">Select Track</label>
-                                    <Select value={currentTrackId} onValueChange={handleTrackChange}>
-                                        <SelectTrigger className="w-full bg-white/80 border-calm-sky/30">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {tracks.map(track => (
-                                                <SelectItem key={track.id} value={track.id}>
-                                                    {track.title}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                {/* Volume Control */}
-                                <div className="space-y-2">
-                                    <div className="flex items-center justify-between">
-                                        <label className="text-sm font-medium text-calm-deep/70">Volume</label>
-                                        <span className="text-sm text-calm-deep/60">{volume}%</span>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <Volume2 className="h-4 w-4 text-calm-sky flex-shrink-0" />
-                                        <Slider
-                                            value={[volume]}
-                                            onValueChange={(values) => setVolume(values[0])}
-                                            max={100}
-                                            step={1}
-                                            className="flex-1"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Current Status */}
-                                {isPlaying && (
-                                    <div className="pt-2 flex items-center justify-center gap-2 text-calm-deep/60 animate-fade-in">
-                                        <div className="w-2 h-2 bg-calm-sky rounded-full animate-gentle-pulse" />
-                                        <span className="text-sm">Now playing: {currentTrack.title}</span>
-                                    </div>
-                                )}
-
-                                {/* Attribution */}
-                                <div className="pt-2 border-t border-calm-sky/20">
-                                    <p className="text-xs text-calm-deep/50 text-center">
-                                        {currentTrack.attribution}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 

@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-18T13:13:47.953Z",
+  "generatedAt": "2026-02-18T13:26:36.900Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -12,26 +12,21 @@
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Replace the current single hard-coded background track (/assets/relaxing-music.mp3) with a configurable set of upbeat, positive-vibe royalty-free music tracks served as static frontend assets, and update the player logic to load/play the selected track.",
+        "summary": "Remove all background music playback logic from the main page, including the HTMLAudioElement creation, play/pause handling, volume handling, and track-switching side effects.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/music/tracks.ts",
-          "frontend/public/assets/music/positive-vibes-1.mp3",
-          "frontend/public/assets/music/positive-vibes-2.mp3",
           "frontend/src/pages/MainPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/music/tracks.ts",
           "frontend/src/pages/MainPage.tsx"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Enhance the existing music controls on MainPage to support upbeat background music playback with: play/pause, volume control, and track selection; ensure all user-facing labels are in English and match an upbeat/positive tone.",
+        "summary": "Remove all music-related UI from the main page, including the header play/pause button and the \"Music Controls\" panel (track selection, volume slider, now-playing status, and attribution).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/MainPage.tsx",
-          "frontend/src/index.css"
+          "frontend/src/pages/MainPage.tsx"
         ],
         "matchedFiles": [
           "frontend/src/pages/MainPage.tsx"
@@ -39,34 +34,24 @@
       },
       {
         "id": "REQ-3",
-        "summary": "Add a small in-app attribution section for the included royalty-free music (e.g., track title + author/source/license text), displayed in the UI (footer or near the music controls).",
+        "summary": "Remove the unused music track configuration dependency from the frontend by eliminating usage/imports of the track list used for background music.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/music/tracks.ts",
-          "frontend/src/pages/MainPage.tsx"
+          "frontend/src/pages/MainPage.tsx",
+          "frontend/src/music/tracks.ts"
         ],
         "matchedFiles": [
-          "frontend/src/music/tracks.ts",
-          "frontend/src/pages/MainPage.tsx"
+          "frontend/src/pages/MainPage.tsx",
+          "frontend/src/music/tracks.ts"
         ]
       }
     ]
   },
   "changedFiles": [
     "build-request.json",
-    "build-template/Dockerfile",
-    "build-template/LICENSE",
-    "build-template/README.md",
-    "build-template/deploy.sh",
-    "build-template/icp.yaml",
-    "build-template/src/backend/canister.yaml",
-    "build-template/src/frontend/canister.yaml",
-    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/config.ts",
-    "frontend/src/hooks/useInternetIdentity.ts",
     "frontend/src/music/tracks.ts",
     "frontend/src/pages/MainPage.tsx",
     "project_state.json",

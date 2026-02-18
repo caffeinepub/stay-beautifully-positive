@@ -1,12 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Replace the single hard-coded background music track with a selectable set of upbeat, royalty-free tracks, including user controls and visible attribution.
+**Goal:** Remove background music playback and all music controls from the main page.
 
 **Planned changes:**
-- Add a clearly editable frontend track list (e.g., `{ title, src, attribution }`) referencing upbeat royalty-free audio files served from static assets.
-- Update music player logic to load/play the currently selected track, switch tracks during use, loop playback, and handle browser autoplay blocking without breaking the UI.
-- Enhance MainPage music controls to include play/pause, volume control, and a track selector, plus an indicator showing the currently playing track name with upbeat/positive English labels.
-- Display an unobtrusive in-app attribution section for the currently selected track using the attribution metadata in the track configuration.
+- Delete all background audio playback logic from the main page (Audio element creation, play/pause, volume, and track-switching side effects).
+- Remove all music-related UI from the main page (header play/pause control and the full “Music Controls” panel including track selection, volume, now-playing text, and attribution).
+- Eliminate dependency on the music track list by removing imports/usages of `frontend/src/music/tracks.ts`.
 
-**User-visible outcome:** Users can pick an upbeat background music track, play/pause it, adjust volume, see which track is playing, and view royalty-free attribution details in the app.
+**User-visible outcome:** The app loads and runs with no background music and no music controls visible; the daily message and motto remain intact and appropriately centered.
