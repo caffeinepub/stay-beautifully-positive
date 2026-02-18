@@ -1,0 +1,17 @@
+{
+  "backend/main.mo": "Motoko canister exposing daily inspirational messages with filters, plus blob-storage mixin for background music uploads.",
+  "feature_evidence.json": "Feature evidence report mapping music-related features to affected frontend files and components.",
+  "frontend-file-summaries.txt": "Prewritten summaries describing roles of core frontend files including MainPage, music tracks config, and styling.",
+  "frontend/index.css": "Tailwind base theme variables and dark-mode color definitions for the legacy color system.",
+  "frontend/index.html": "Basic HTML entry point loading the React app root and main script.",
+  "frontend/src/App.tsx": "Wraps MainPage with ThemeProvider and toast notifications.",
+  "frontend/src/hooks/useActor.ts": "React hook creating and caching the backend actor, refreshing dependent queries when identity changes.",
+  "frontend/src/hooks/useInternetIdentity.ts": "Internet Identity auth provider and hook managing login, stored identity, and status.",
+  "frontend/src/hooks/useQueries.ts": "Query hooks calling backend endpoints for daily message, motto, categories, and all messages.",
+  "frontend/src/index.css": "Tailwind-based global CSS defining OKLCH calming palette and utility classes.",
+  "frontend/src/main.tsx": "React entry that sets up QueryClient, InternetIdentityProvider, and renders App.",
+  "frontend/src/music/tracks.ts": "Defines available upbeat music tracks with ids, file paths, titles, and attribution.",
+  "frontend/src/pages/MainPage.tsx": "Main React page handling daily message loading and an audio player with play/pause, volume, and track selection. It initializes and manages an HTMLAudioElement and renders the main UI layout.",
+  "frontend/tailwind.config.js": "Tailwind CSS configuration extending colors, animations, radius, and plugins like typography and container queries. Defines theme customizations and scans project files for class usage.",
+  "project_state.json": "JSON file describing the project's current state, features, requests, and metadata for the Positive Vibes app. Used for tracking feature versions and pending work."
+}

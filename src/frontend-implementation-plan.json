@@ -1,0 +1,83 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Add upbeat royalty-free background music options",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Replace the single hard-coded background track with a configurable upbeat track list served as static assets, and update playback logic to load/play the selected track safely.",
+      "acceptanceCriteria": [
+        "The app no longer hard-codes \"/assets/relaxing-music.mp3\" as the only available track.",
+        "At least one upbeat track is referenced via a single, clearly editable track list (e.g., an array of {title, src, attribution}).",
+        "Selecting a different track (via UI added in REQ-2) switches playback to the chosen track and continues looping.",
+        "If audio playback is blocked by the browser, the app does not crash and the UI remains usable."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/music/tracks.ts",
+          "operation": "create",
+          "description": "Create a single, clearly editable track configuration list (e.g., array of { id, title, src, attribution }) referencing upbeat/positive-vibe royalty-free tracks served from frontend/public as static assets."
+        },
+        {
+          "path": "frontend/public/assets/music/positive-vibes-1.mp3",
+          "operation": "create",
+          "description": "Add an upbeat/positive-vibe royalty-free background music file as a static frontend asset referenced by frontend/src/music/tracks.ts."
+        },
+        {
+          "path": "frontend/public/assets/music/positive-vibes-2.mp3",
+          "operation": "create",
+          "description": "Add an additional upbeat/positive-vibe royalty-free background music file as a static frontend asset referenced by frontend/src/music/tracks.ts (keeps the track list configurable and demonstrably multi-track)."
+        },
+        {
+          "path": "frontend/src/pages/MainPage.tsx",
+          "operation": "modify",
+          "description": "Refactor audio initialization away from hard-coded '/assets/relaxing-music.mp3' to use the track list from frontend/src/music/tracks.ts; implement track switching while maintaining looping; add safe play() error handling so autoplay-block scenarios don’t crash the app and the UI remains usable."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Enhance MainPage music controls to include play/pause, volume control, and track selection with upbeat/positive English labels and current track indication.",
+      "acceptanceCriteria": [
+        "The header music button still toggles play/pause.",
+        "A volume control is available and changes the playback volume immediately.",
+        "A track selector UI is available (dropdown, list, or buttons) showing track titles.",
+        "The UI indicates the current track name when music is playing.",
+        "All user-facing text related to music (e.g., status indicator) is updated from “Relaxing music playing” to wording that matches upbeat/positive vibes (in English)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/MainPage.tsx",
+          "operation": "modify",
+          "description": "Add UI for track selection (showing track titles) and volume control (immediate effect on playback); keep the header button toggling play/pause; update the status indicator copy to upbeat/positive English and include the currently playing track name; ensure UI state stays consistent when play is blocked."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "If needed, add minimal global styling utilities for native range/select controls used by the music UI so the new controls match the existing upbeat/positive visual style (do not modify any files under frontend/src/components/ui)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Display unobtrusive, in-app attribution for the currently selected royalty-free music track.",
+      "acceptanceCriteria": [
+        "For each available track, there is attribution metadata stored alongside the track configuration.",
+        "The app displays attribution text for the currently selected track in a readable but unobtrusive way.",
+        "Attribution is visible without requiring developer tools or viewing source code."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/music/tracks.ts",
+          "operation": "modify",
+          "description": "Ensure each track entry includes complete attribution metadata (e.g., title + author/source/license text) alongside src in the single shared configuration list."
+        },
+        {
+          "path": "frontend/src/pages/MainPage.tsx",
+          "operation": "modify",
+          "description": "Render a small, readable but unobtrusive attribution section (near the music controls or in the footer) that updates to show attribution for the currently selected track, sourced directly from frontend/src/music/tracks.ts."
+        }
+      ]
+    }
+  ]
+}

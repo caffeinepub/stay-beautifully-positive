@@ -1,0 +1,92 @@
+{
+  "kind": "build_request",
+  "title": "Add upbeat royalty-free background music options",
+  "projectName": "Positive Vibes",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Replace the current single hard-coded background track (/assets/relaxing-music.mp3) with a configurable set of upbeat, positive-vibe royalty-free music tracks served as static frontend assets, and update the player logic to load/play the selected track.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1",
+          "msg-2"
+        ],
+        "quotes": [
+          "Is it possible to add royalty free music to my webside?",
+          "Upbeat and positive vibes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The app no longer hard-codes \"/assets/relaxing-music.mp3\" as the only available track.",
+        "At least one upbeat track is referenced via a single, clearly editable track list (e.g., an array of {title, src, attribution}).",
+        "Selecting a different track (via UI added in REQ-2) switches playback to the chosen track and continues looping.",
+        "If audio playback is blocked by the browser, the app does not crash and the UI remains usable."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Enhance the existing music controls on MainPage to support upbeat background music playback with: play/pause, volume control, and track selection; ensure all user-facing labels are in English and match an upbeat/positive tone.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "Upbeat and positive vibes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The header music button still toggles play/pause.",
+        "A volume control is available and changes the playback volume immediately.",
+        "A track selector UI is available (dropdown, list, or buttons) showing track titles.",
+        "The UI indicates the current track name when music is playing.",
+        "All user-facing text related to music (e.g., status indicator) is updated from “Relaxing music playing” to wording that matches upbeat/positive vibes (in English)."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Add a small in-app attribution section for the included royalty-free music (e.g., track title + author/source/license text), displayed in the UI (footer or near the music controls).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Is it possible to add royalty free music to my webside?"
+        ]
+      },
+      "acceptanceCriteria": [
+        "For each available track, there is attribution metadata stored alongside the track configuration.",
+        "The app displays attribution text for the currently selected track in a readable but unobtrusive way.",
+        "Attribution is visible without requiring developer tools or viewing source code."
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not modify files under frontend/src/components/ui (Shadcn UI components must be composed, not edited).",
+    "Do not modify immutable hook/entry files: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx."
+  ],
+  "nonGoals": [
+    "Implementing third-party music streaming integrations or pulling music from external APIs.",
+    "Adding user accounts or permissions for uploading music.",
+    "Changing the daily quote rotation logic in the backend."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [
+      "Prefers upbeat and positive vibe background music."
+    ],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}

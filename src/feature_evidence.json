@@ -1,0 +1,64 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-replace-the-current-single-hard-coded-background-track-assets-relaxing-music-mp3-with-a-configurable-set-of-upbeat-positive-vibe-royalty-free-music-tracks-served-as-static-frontend-assets-and-update-the-player-logic-to-load-play-the-selected-track",
+      "featureTitle": "Replace the current single hard-coded background track (/assets/relaxing-music.mp3) with a configurable set of upbeat, positive-vibe royalty-free music tracks served as static frontend assets, and update the player logic to load/play the selected track.",
+      "files": [
+        "frontend/src/music/tracks.ts",
+        "frontend/src/pages/MainPage.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-enhance-the-existing-music-controls-on-mainpage-to-support-upbeat-background-music-playback-with-play-pause-volume-control-and-track-selection-ensure-all-user-facing-labels-are-in-english-and-match-an-upbeat-positive-tone",
+      "featureTitle": "Enhance the existing music controls on MainPage to support upbeat background music playback with: play/pause, volume control, and track selection; ensure all user-facing labels are in English and match an upbeat/positive tone.",
+      "files": [
+        "frontend/src/pages/MainPage.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-small-in-app-attribution-section-for-the-included-royalty-free-music-e-g-track-title-author-source-license-text-displayed-in-the-ui-footer-or-near-the-music-controls",
+      "featureTitle": "Add a small in-app attribution section for the included royalty-free music (e.g., track title + author/source/license text), displayed in the UI (footer or near the music controls).",
+      "files": [
+        "frontend/src/music/tracks.ts",
+        "frontend/src/pages/MainPage.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

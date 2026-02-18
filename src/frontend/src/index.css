@@ -1,0 +1,198 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --radius: 0.75rem;
+        
+        /* Calming color palette using OKLCH */
+        --calm-sky: 0.75 0.12 230;
+        --calm-lavender: 0.72 0.15 290;
+        --calm-rose: 0.70 0.14 15;
+        --calm-deep: 0.25 0.02 260;
+        --calm-soft: 0.95 0.01 260;
+        
+        /* Base colors */
+        --background: 0.98 0.005 260;
+        --foreground: 0.20 0.02 260;
+        
+        /* Card colors */
+        --card: 1 0 0;
+        --card-foreground: 0.20 0.02 260;
+        
+        /* Popover colors */
+        --popover: 1 0 0;
+        --popover-foreground: 0.20 0.02 260;
+        
+        /* Primary colors - calming sky blue */
+        --primary: 0.75 0.12 230;
+        --primary-foreground: 0.99 0 0;
+        
+        /* Secondary colors - soft lavender */
+        --secondary: 0.95 0.03 290;
+        --secondary-foreground: 0.25 0.02 260;
+        
+        /* Muted colors */
+        --muted: 0.96 0.01 260;
+        --muted-foreground: 0.50 0.02 260;
+        
+        /* Accent colors - gentle rose */
+        --accent: 0.94 0.04 15;
+        --accent-foreground: 0.25 0.02 260;
+        
+        /* Destructive colors */
+        --destructive: 0.60 0.20 25;
+        --destructive-foreground: 0.99 0 0;
+        
+        /* Border and input */
+        --border: 0.90 0.02 260;
+        --input: 0.92 0.02 260;
+        --ring: 0.75 0.12 230;
+        
+        /* Chart colors */
+        --chart-1: 0.75 0.12 230;
+        --chart-2: 0.72 0.15 290;
+        --chart-3: 0.70 0.14 15;
+        --chart-4: 0.68 0.13 180;
+        --chart-5: 0.73 0.11 320;
+    }
+
+    .dark {
+        --background: 0.15 0.02 260;
+        --foreground: 0.95 0.01 260;
+        --card: 0.18 0.02 260;
+        --card-foreground: 0.95 0.01 260;
+        --popover: 0.18 0.02 260;
+        --popover-foreground: 0.95 0.01 260;
+        --primary: 0.75 0.12 230;
+        --primary-foreground: 0.15 0.02 260;
+        --secondary: 0.25 0.03 290;
+        --secondary-foreground: 0.95 0.01 260;
+        --muted: 0.22 0.02 260;
+        --muted-foreground: 0.65 0.02 260;
+        --accent: 0.30 0.04 15;
+        --accent-foreground: 0.95 0.01 260;
+        --destructive: 0.55 0.20 25;
+        --destructive-foreground: 0.95 0.01 260;
+        --border: 0.30 0.02 260;
+        --input: 0.28 0.02 260;
+        --ring: 0.75 0.12 230;
+    }
+
+    * {
+        @apply border-border;
+    }
+    
+    body {
+        @apply bg-background text-foreground;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+@layer utilities {
+    /* Custom color utilities */
+    .text-calm-sky {
+        color: oklch(var(--calm-sky));
+    }
+    
+    .text-calm-lavender {
+        color: oklch(var(--calm-lavender));
+    }
+    
+    .text-calm-rose {
+        color: oklch(var(--calm-rose));
+    }
+    
+    .text-calm-deep {
+        color: oklch(var(--calm-deep));
+    }
+    
+    .text-calm-soft {
+        color: oklch(var(--calm-soft));
+    }
+    
+    .bg-calm-sky {
+        background-color: oklch(var(--calm-sky));
+    }
+    
+    .bg-calm-lavender {
+        background-color: oklch(var(--calm-lavender));
+    }
+    
+    .bg-calm-rose {
+        background-color: oklch(var(--calm-rose));
+    }
+    
+    .bg-calm-deep {
+        background-color: oklch(var(--calm-deep));
+    }
+    
+    .bg-calm-soft {
+        background-color: oklch(var(--calm-soft));
+    }
+    
+    .border-calm-sky {
+        border-color: oklch(var(--calm-sky));
+    }
+    
+    .from-calm-sky {
+        --tw-gradient-from: oklch(var(--calm-sky)) var(--tw-gradient-from-position);
+    }
+    
+    .via-calm-lavender {
+        --tw-gradient-via: oklch(var(--calm-lavender)) var(--tw-gradient-via-position);
+    }
+    
+    .to-calm-rose {
+        --tw-gradient-to: oklch(var(--calm-rose)) var(--tw-gradient-to-position);
+    }
+    
+    .to-calm-lavender {
+        --tw-gradient-to: oklch(var(--calm-lavender)) var(--tw-gradient-to-position);
+    }
+    
+    /* Custom shadow utilities */
+    .shadow-soft {
+        box-shadow: 0 4px 20px -2px oklch(var(--calm-sky) / 0.15);
+    }
+    
+    .shadow-glow {
+        box-shadow: 0 0 20px oklch(var(--calm-lavender) / 0.3);
+    }
+    
+    .shadow-glow-lg {
+        box-shadow: 0 0 40px oklch(var(--calm-lavender) / 0.25), 0 10px 30px -5px oklch(var(--calm-sky) / 0.2);
+    }
+    
+    /* Custom animations */
+    @keyframes gentle-pulse {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.95;
+            transform: scale(1.01);
+        }
+    }
+    
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    
+    .animate-gentle-pulse {
+        animation: gentle-pulse 4s ease-in-out infinite;
+    }
+    
+    .animate-fade-in {
+        animation: fade-in 0.8s ease-out;
+    }
+}

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Positive vibes web app with daily uplifting quotes; user wants to add upbeat, royalty-free background music and share the live site URL.",
+  "architectural_notes": [],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-replace-the-current-single-hard-coded-background-track-assets-relaxing-music-mp3-with-a-configurable-set-of-upbeat-positive-vibe-royalty-free-music-tracks-served-as-static-frontend-assets-and-update-the-player-logic-to-load-play-the-selected-track",
+      "title": "Replace the current single hard-coded background track (/assets/relaxing-music.mp3) with a configurable set of upbeat, positive-vibe royalty-free music tracks served as static frontend assets, and update the player logic to load/play the selected track.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-the-existing-music-controls-on-mainpage-to-support-upbeat-background-music-playback-with-play-pause-volume-control-and-track-selection-ensure-all-user-facing-labels-are-in-english-and-match-an-upbeat-positive-tone",
+      "title": "Enhance the existing music controls on MainPage to support upbeat background music playback with: play/pause, volume control, and track selection; ensure all user-facing labels are in English and match an upbeat/positive tone.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-small-in-app-attribution-section-for-the-included-royalty-free-music-e-g-track-title-author-source-license-text-displayed-in-the-ui-footer-or-near-the-music-controls",
+      "title": "Add a small in-app attribution section for the included royalty-free music (e.g., track title + author/source/license text), displayed in the UI (footer or near the music controls).",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Add upbeat, royalty-free background music to the website (audio player/background music feature)",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Positive Vibes",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
