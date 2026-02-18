@@ -20,6 +20,13 @@ export function useDailyMessage() {
         enabled: !!actor && !isFetching,
         staleTime: 1000 * 60 * 60, // 1 hour - message changes daily
         refetchOnWindowFocus: false,
+        retry: (failureCount, error) => {
+            // Don't retry on actor initialization errors
+            if (error instanceof Error && error.message === 'Actor not initialized') {
+                return false;
+            }
+            return failureCount < 2;
+        },
     });
 }
 

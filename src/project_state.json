@@ -1,22 +1,22 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Project appears to be a habit/mood tracking app with a streak counter and mood check-in, with planned UI/UX enhancements.",
+  "summary": "Affirmations app with sharing functionality",
   "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-show-a-small-time-limited-celebratory-message-in-the-ui-when-a-signed-in-user-successfully-completes-a-daily-check-in-and-their-streak-increases-i-e-they-kept-their-streak-going",
-      "title": "Show a small, time-limited celebratory message in the UI when a signed-in user successfully completes a daily check-in and their streak increases (i.e., they kept their streak going).",
+      "id": "feature-add-a-share-button-to-the-daily-affirmations-display-that-allows-users-to-share-the-current-day-s-affirmation-message",
+      "title": "Add a share button to the daily affirmations display that allows users to share the current day's affirmation message",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-update-the-check-in-success-flow-to-determine-whether-the-streak-was-extended-by-comparing-the-new-streak-value-returned-by-updatedailytracker-with-the-previously-cached-loaded-streak-value-and-trigger-the-celebratory-message-only-when-the-new-value-is-greater-than-the-previous-value",
-      "title": "Update the check-in success flow to determine whether the streak was extended by comparing the new streak value returned by updateDailyTracker() with the previously cached/loaded streak value, and trigger the celebratory message only when the new value is greater than the previous value.",
+      "id": "feature-format-the-shared-affirmation-message-to-include-attribution-indicating-it-came-from-the-daily-affirmations-app",
+      "title": "Format the shared affirmation message to include attribution indicating it came from the Daily Affirmations app",
       "reqIds": [
         "REQ-2"
       ],
@@ -26,12 +26,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Add a small celebratory message when a user keeps their streak going",
+      "summary": "Add share option for daily affirmations",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Stay Beautifully Positive",
+  "projectName": "Daily Affirmations",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

@@ -1,68 +1,59 @@
 {
   "kind": "build_request",
-  "title": "Add celebratory message when a user extends their streak",
-  "projectName": "Stay Beautifully Positive",
+  "title": "Add share option for daily affirmations",
+  "projectName": "Daily Affirmations",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Show a small, time-limited celebratory message in the UI when a signed-in user successfully completes a daily check-in and their streak increases (i.e., they kept their streak going).",
+      "text": "Add a share button to the daily affirmations display that allows users to share the current day's affirmation message",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-5"
         ],
         "quotes": [
-          "That would be amazing."
+          "Can we add a share option for ppl to share out the days affirmations?"
         ]
       },
       "acceptanceCriteria": [
-        "After a successful check-in, the app displays a short celebratory message that is specifically tied to the streak being extended (not just streakCount > 0).",
-        "The celebratory message automatically disappears after a short duration (e.g., a few seconds) without requiring user interaction.",
-        "The celebratory message is not shown when the user is not authenticated, when the check-in fails, or when the user has already checked in for the current UTC day.",
-        "All user-facing text for the celebratory message is in English."
+        "A share button is visible on the daily affirmation card",
+        "Clicking the share button triggers a native share dialog (Web Share API) if available",
+        "The shared content includes the full affirmation text",
+        "If Web Share API is not available, provide a fallback to copy the affirmation to clipboard",
+        "User receives visual feedback when sharing is successful or when text is copied"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Update the check-in success flow to determine whether the streak was extended by comparing the new streak value returned by updateDailyTracker() with the previously cached/loaded streak value, and trigger the celebratory message only when the new value is greater than the previous value.",
+      "text": "Format the shared affirmation message to include attribution indicating it came from the Daily Affirmations app",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
-        ],
-        "quotes": [
-          "That would be amazing."
+          "msg-5"
         ]
       },
       "acceptanceCriteria": [
-        "If the previous streak value is N and the check-in mutation returns N+1, the celebratory message is triggered.",
-        "If the previous streak value is N and the check-in mutation returns N (e.g., already checked in today), the celebratory message is not triggered.",
-        "The streak display remains accurate after check-in (streak query is refreshed/invalidated as needed)."
+        "Shared message includes the affirmation text followed by a subtle attribution line",
+        "Attribution maintains a consistent format across all shares",
+        "The format is user-friendly and appropriate for social media sharing"
       ]
     }
   ],
   "constraints": [
-    "Do not edit any files under frontend/src/components/ui or any paths listed in frontend.immutablePaths in SYSTEM_CONTEXT.",
-    "Keep backend logic in a single actor (backend/main.mo); do not introduce additional backend services."
+    "Do not modify the backend schema or add new backend endpoints",
+    "Use the existing daily message data from the useDailyMessage hook",
+    "Maintain consistency with the existing card-based UI design",
+    "Do not change frontend/src/hooks/useInternetIdentity.ts or frontend/src/hooks/useActor.ts"
   ],
   "nonGoals": [
-    "Do not add new authentication providers (Internet Identity only).",
-    "Do not add leaderboards, social sharing, notifications, or any new backend data models unrelated to the celebratory message.",
-    "Do not change the streak calculation rules in the backend (only react to the streak value returned)."
+    "Direct integration with specific social media platforms",
+    "Tracking or analytics for shares",
+    "Customizing the shared message format per platform",
+    "Sharing streak information or mood check-in data"
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

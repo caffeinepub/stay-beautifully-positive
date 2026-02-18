@@ -1,21 +1,25 @@
 import { useEffect, useState } from 'react';
 import { useDailyMessage, useCallerUserProfile } from '../hooks/useQueries';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
+import { useShareAffirmation } from '../hooks/useShareAffirmation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { SiCaffeine } from 'react-icons/si';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Sparkles, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 import LoginButton from '../components/LoginButton';
 import StreakCard from '../components/StreakCard';
 import MoodCheckInCard from '../components/MoodCheckInCard';
 import ProfileSetupDialog from '../components/ProfileSetupDialog';
+import { APP_VERSION } from '../version';
 
 export default function MainPage() {
     const { data: dailyMessage, isLoading: messageLoading, error: messageError, refetch } = useDailyMessage();
     const { identity } = useInternetIdentity();
     const { data: userProfile, isLoading: profileLoading, isFetched: profileFetched } = useCallerUserProfile();
+    const { shareAffirmation, isSharing } = useShareAffirmation();
     const [showContent, setShowContent] = useState(false);
+    const [hasShownError, setHasShownError] = useState(false);
 
     const isAuthenticated = !!identity;
     const showProfileSetup = isAuthenticated && !profileLoading && profileFetched && userProfile === null;
@@ -25,18 +29,35 @@ export default function MainPage() {
         return () => clearTimeout(timer);
     }, []);
 
-    // Show toast on error (only once per error)
+    // Show toast on genuine error (not actor initialization errors)
     useEffect(() => {
         if (messageError) {
-            toast.error('Failed to load daily message', {
-                description: 'Please try again or check your connection.',
-            });
+            const errorMessage = messageError instanceof Error ? messageError.message : String(messageError);
+            // Only show error toast for genuine backend failures, not initialization issues
+            if (!errorMessage.includes('Actor not initialized') && !hasShownError) {
+                toast.error('Failed to load daily message', {
+                    description: 'Please try again or check your connection.',
+                });
+                setHasShownError(true);
+            }
+        } else {
+            setHasShownError(false);
         }
-    }, [messageError]);
+    }, [messageError, hasShownError]);
 
     const handleRetry = () => {
+        setHasShownError(false);
         refetch();
     };
+
+    const handleShare = () => {
+        if (dailyMessage?.text) {
+            shareAffirmation(dailyMessage.text);
+        }
+    };
+
+    // Determine if we should show error UI (only for genuine errors)
+    const showError = messageError && messageError instanceof Error && !messageError.message.includes('Actor not initialized');
 
     return (
         <div className="min-h-screen relative overflow-hidden">
@@ -70,6 +91,21 @@ export default function MainPage() {
                     </div>
                 </header>
 
+                {/* Announcement Banner */}
+                <div className="w-full px-4 sm:px-6 lg:px-8 mb-6">
+                    <div className="max-w-7xl mx-auto">
+                        <Card className="bg-gradient-to-r from-calm-sky/20 via-calm-lavender/20 to-calm-rose/20 backdrop-blur-md border-white/40 shadow-lg rounded-2xl px-4 py-3 sm:px-6 sm:py-4">
+                            <div className="flex items-center justify-center gap-2 sm:gap-3">
+                                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-calm-sky flex-shrink-0" />
+                                <p className="text-sm sm:text-base font-medium text-calm-deep text-center">
+                                    You're on a streak! Keep up the great work.
+                                </p>
+                                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-calm-rose flex-shrink-0" />
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+
                 {/* Center Content */}
                 <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
                     <div className={`w-full max-w-5xl transition-all duration-1000 ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -89,7 +125,7 @@ export default function MainPage() {
                                     <div className="h-6 bg-calm-sky/20 rounded-full w-full animate-pulse" />
                                     <div className="h-6 bg-calm-sky/20 rounded-full w-5/6 mx-auto animate-pulse" />
                                 </div>
-                            ) : messageError ? (
+                            ) : showError ? (
                                 <div className="text-center space-y-4">
                                     <div className="inline-block px-4 py-2 bg-destructive/10 rounded-full">
                                         <p className="text-sm font-medium text-destructive uppercase tracking-wider">
@@ -130,6 +166,19 @@ export default function MainPage() {
                                             </p>
                                         </div>
                                     </div>
+
+                                    {/* Share Button */}
+                                    <div className="pt-4">
+                                        <Button
+                                            onClick={handleShare}
+                                            disabled={isSharing}
+                                            variant="outline"
+                                            className="bg-white/50 hover:bg-white/70 border-calm-sky/30 hover:border-calm-sky/50 text-calm-deep transition-all duration-300"
+                                        >
+                                            <Share2 className="w-4 h-4 mr-2" />
+                                            {isSharing ? 'Sharing...' : 'Share Affirmation'}
+                                        </Button>
+                                    </div>
                                 </div>
                             ) : (
                                 <p className="text-center text-calm-deep/60">No message available</p>
@@ -146,7 +195,7 @@ export default function MainPage() {
 
                 {/* Footer */}
                 <footer className="w-full py-6 px-4 sm:px-6 lg:px-8">
-                    <div className="max-w-7xl mx-auto text-center">
+                    <div className="max-w-7xl mx-auto text-center space-y-2">
                         <p className="text-sm text-calm-deep/50 flex items-center justify-center gap-2 flex-wrap">
                             <span>© {new Date().getFullYear()}. Built with</span>
                             <span className="inline-flex items-center gap-1 text-calm-rose">
@@ -164,6 +213,9 @@ export default function MainPage() {
                                 <SiCaffeine className="w-4 h-4" />
                                 caffeine.ai
                             </a>
+                        </p>
+                        <p className="text-xs text-calm-deep/30">
+                            {APP_VERSION}
                         </p>
                     </div>
                 </footer>

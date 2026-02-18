@@ -1,43 +1,49 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Streak extension celebratory message (frontend-only)",
+  "title": "Add share option for daily affirmations",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Display a small time-limited celebratory UI message only when an authenticated user successfully extends their streak after a daily check-in.",
+      "summary": "Add a share button to the daily affirmations display that allows users to share the current day's affirmation message",
       "acceptanceCriteria": [
-        "After a successful check-in, the app displays a short celebratory message that is specifically tied to the streak being extended (not just streakCount > 0).",
-        "The celebratory message automatically disappears after a short duration (e.g., a few seconds) without requiring user interaction.",
-        "The celebratory message is not shown when the user is not authenticated, when the check-in fails, or when the user has already checked in for the current UTC day.",
-        "All user-facing text for the celebratory message is in English."
+        "A share button is visible on the daily affirmation card",
+        "Clicking the share button triggers a native share dialog (Web Share API) if available",
+        "The shared content includes the full affirmation text",
+        "If Web Share API is not available, provide a fallback to copy the affirmation to clipboard",
+        "User receives visual feedback when sharing is successful or when text is copied"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/MoodCheckInCard.tsx",
+          "path": "frontend/src/hooks/useShareAffirmation.ts",
+          "operation": "create",
+          "description": "Create a custom hook that encapsulates share logic with Web Share API detection, fallback to clipboard copy, and user feedback through toast notifications. The hook accepts an affirmation message and attribution text, returns a share function and loading state, and handles browser compatibility gracefully."
+        },
+        {
+          "path": "frontend/src/pages/MainPage.tsx",
           "operation": "modify",
-          "description": "Update the check-in success UI to show a brief, auto-dismissing celebratory message (e.g., a Sonner toast) only when the streak was extended; ensure the message is English-only and never shown for unauthenticated users, failed check-ins, or same-day re-check-ins."
+          "description": "Add a share button to the daily message card section that invokes the useShareAffirmation hook with the current day's affirmation message. Position the button appropriately within the existing card layout, maintaining consistency with the card-based UI design. Include visual feedback for share success or clipboard copy events using existing toast patterns."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Determine whether a check-in extended the streak by comparing the mutation result to the previously cached/loaded streak value, and only trigger the celebratory message when the new value is greater.",
+      "summary": "Format the shared affirmation message to include attribution indicating it came from the Daily Affirmations app",
       "acceptanceCriteria": [
-        "If the previous streak value is N and the check-in mutation returns N+1, the celebratory message is triggered.",
-        "If the previous streak value is N and the check-in mutation returns N (e.g., already checked in today), the celebratory message is not triggered.",
-        "The streak display remains accurate after check-in (streak query is refreshed/invalidated as needed)."
+        "Shared message includes the affirmation text followed by a subtle attribution line",
+        "Attribution maintains a consistent format across all shares",
+        "The format is user-friendly and appropriate for social media sharing"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Update the mood check-in mutation flow to capture the previously cached/loaded streak value (from the existing React Query cache for the current user's streak), return it via mutation context, and ensure the streak query is invalidated/refetched so the streak display remains accurate."
+          "path": "frontend/src/utils/formatShareMessage.ts",
+          "operation": "create",
+          "description": "Create a utility function that formats the affirmation message with attribution. The function accepts the raw affirmation text and returns a formatted string that includes the affirmation followed by a consistent attribution line such as '- Daily Affirmations'. The format should be social-media-friendly with appropriate line breaks."
         },
         {
-          "path": "frontend/src/components/MoodCheckInCard.tsx",
+          "path": "frontend/src/hooks/useShareAffirmation.ts",
           "operation": "modify",
-          "description": "Use the previous streak value (from the check-in mutation context) and the new streak returned by updateDailyTracker() to decide whether to trigger the celebratory message only when newStreak > previousStreak; ensure no celebratory message is shown when newStreak === previousStreak (already checked in today)."
+          "description": "Import and use the formatShareMessage utility to format the affirmation message before sharing or copying to clipboard. Ensure the formatted message is used consistently in both the Web Share API call and the clipboard fallback."
         }
       ]
     }

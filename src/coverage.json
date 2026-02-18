@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-18T14:03:52.874Z",
+  "generatedAt": "2026-02-18T14:58:23.638Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -12,37 +12,41 @@
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Show a small, time-limited celebratory message in the UI when a signed-in user successfully completes a daily check-in and their streak increases (i.e., they kept their streak going).",
+        "summary": "Add a share button to the daily affirmations display that allows users to share the current day's affirmation message",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/MoodCheckInCard.tsx"
+          "frontend/src/hooks/useShareAffirmation.ts",
+          "frontend/src/pages/MainPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/MoodCheckInCard.tsx"
+          "frontend/src/hooks/useShareAffirmation.ts",
+          "frontend/src/pages/MainPage.tsx"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Update the check-in success flow to determine whether the streak was extended by comparing the new streak value returned by updateDailyTracker() with the previously cached/loaded streak value, and trigger the celebratory message only when the new value is greater than the previous value.",
+        "summary": "Format the shared affirmation message to include attribution indicating it came from the Daily Affirmations app",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/components/MoodCheckInCard.tsx"
+          "frontend/src/utils/formatShareMessage.ts",
+          "frontend/src/hooks/useShareAffirmation.ts"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/components/MoodCheckInCard.tsx"
+          "frontend/src/utils/formatShareMessage.ts",
+          "frontend/src/hooks/useShareAffirmation.ts"
         ]
       }
     ]
   },
   "changedFiles": [
     "build-request.json",
+    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/MoodCheckInCard.tsx",
-    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/hooks/useShareAffirmation.ts",
+    "frontend/src/pages/MainPage.tsx",
+    "frontend/src/utils/formatShareMessage.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

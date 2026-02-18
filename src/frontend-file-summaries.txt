@@ -1,7 +1,7 @@
 {
   "frontend/src/App.tsx": "Main application component that provides QueryClient, ThemeProvider, and renders MainPage with toast notifications using a single QueryClient instance.",
-  "frontend/src/pages/MainPage.tsx": "Main application page featuring daily inspirational quotes, mood check-in card, streak counter card, login button in header, and profile setup dialog for new users.",
-  "frontend/src/hooks/useQueries.ts": "React Query hooks for fetching daily messages, managing user streak info, handling mood check-ins with mutations that capture previous streak values via onMutate context, and managing user profiles with proper authentication guards and cache invalidation.",
+  "frontend/src/pages/MainPage.tsx": "Main application page with daily inspirational quotes, mood check-in, streak counter, announcement banner, and share button for affirmations that uses Web Share API or clipboard fallback; error handling filters out actor initialization errors to prevent false error states.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for backend operations with improved error handling that distinguishes genuine backend failures from transient actor initialization states.",
   "frontend/src/index.css": "Custom CSS with OKLCH-based calming color palette (sky blue, lavender, rose), custom shadow utilities, and gentle animation keyframes for the mindfulness theme.",
   "frontend/tailwind.config.js": "Tailwind configuration extended with serif font family for elegant quote display and maintaining the custom design system.",
   "frontend/src/music/tracks.ts": "Configuration file defining available upbeat/positive royalty-free music tracks with id, title, source path, and attribution metadata.",
@@ -9,5 +9,10 @@
   "frontend/src/components/LoginButton.tsx": "Internet Identity login/logout button component with loading states, error handling, and query cache clearing on logout.",
   "frontend/src/components/StreakCard.tsx": "Displays the user's current check-in streak count with loading, error, and signed-out states, including retry functionality.",
   "frontend/src/components/MoodCheckInCard.tsx": "Mood selection and daily check-in UI with four mood options, authentication guards, and celebratory toast notifications that only appear when the streak is extended (newStreak > previousStreak), with auto-dismissing success messages.",
-  "frontend/src/components/ProfileSetupDialog.tsx": "Modal dialog for first-time user profile setup that prompts authenticated users to enter their name with form validation and error handling."
+  "frontend/src/components/ProfileSetupDialog.tsx": "Modal dialog for first-time user profile setup that prompts authenticated users to enter their name with form validation and error handling.",
+  "frontend/src/version.ts": "Single source of truth constant for the app build version label (Version 10) used for display verification.",
+  "frontend/src/hooks/useActor.ts": "Handles backend actor initialization with identity management, now invalidates dependent queries without forcing immediate refetch to prevent spurious errors during actor transitions.",
+  "frontend/index.html": "HTML entry point with Version 10 meta tag and updated title for production deployment verification.",
+  "frontend/src/utils/formatShareMessage.ts": "Utility function that formats affirmation text with attribution for sharing on social media or copying to clipboard.",
+  "frontend/src/hooks/useShareAffirmation.ts": "Custom React hook that handles sharing affirmations using Web Share API with automatic fallback to clipboard copy, including loading states and toast notifications for user feedback."
 }

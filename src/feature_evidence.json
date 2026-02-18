@@ -2,10 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-show-a-small-time-limited-celebratory-message-in-the-ui-when-a-signed-in-user-successfully-completes-a-daily-check-in-and-their-streak-increases-i-e-they-kept-their-streak-going",
-      "featureTitle": "Show a small, time-limited celebratory message in the UI when a signed-in user successfully completes a daily check-in and their streak increases (i.e., they kept their streak going).",
+      "featureId": "feature-add-a-share-button-to-the-daily-affirmations-display-that-allows-users-to-share-the-current-day-s-affirmation-message",
+      "featureTitle": "Add a share button to the daily affirmations display that allows users to share the current day's affirmation message",
       "files": [
-        "frontend/src/components/MoodCheckInCard.tsx"
+        "frontend/src/hooks/useShareAffirmation.ts",
+        "frontend/src/pages/MainPage.tsx"
       ],
       "components": [
         "blob-storage@4.0.0",
@@ -22,11 +23,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-the-check-in-success-flow-to-determine-whether-the-streak-was-extended-by-comparing-the-new-streak-value-returned-by-updatedailytracker-with-the-previously-cached-loaded-streak-value-and-trigger-the-celebratory-message-only-when-the-new-value-is-greater-than-the-previous-value",
-      "featureTitle": "Update the check-in success flow to determine whether the streak was extended by comparing the new streak value returned by updateDailyTracker() with the previously cached/loaded streak value, and trigger the celebratory message only when the new value is greater than the previous value.",
+      "featureId": "feature-format-the-shared-affirmation-message-to-include-attribution-indicating-it-came-from-the-daily-affirmations-app",
+      "featureTitle": "Format the shared affirmation message to include attribution indicating it came from the Daily Affirmations app",
       "files": [
-        "frontend/src/components/MoodCheckInCard.tsx",
-        "frontend/src/hooks/useQueries.ts"
+        "frontend/src/hooks/useShareAffirmation.ts",
+        "frontend/src/utils/formatShareMessage.ts"
       ],
       "components": [
         "blob-storage@4.0.0",
