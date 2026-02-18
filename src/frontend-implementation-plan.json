@@ -1,57 +1,43 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Remove background music and music controls from MainPage",
+  "title": "Streak extension celebratory message (frontend-only)",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Remove all background music playback logic from MainPage (audio element, play/pause, volume, and track-switching side effects).",
+      "summary": "Display a small time-limited celebratory UI message only when an authenticated user successfully extends their streak after a daily check-in.",
       "acceptanceCriteria": [
-        "MainPage renders and functions without creating or controlling an Audio element.",
-        "No audio starts playing (or attempts to play) when the app loads or when interacting with the page.",
-        "There are no console errors related to audio playback (e.g., 'Audio playback failed')."
+        "After a successful check-in, the app displays a short celebratory message that is specifically tied to the streak being extended (not just streakCount > 0).",
+        "The celebratory message automatically disappears after a short duration (e.g., a few seconds) without requiring user interaction.",
+        "The celebratory message is not shown when the user is not authenticated, when the check-in fails, or when the user has already checked in for the current UTC day.",
+        "All user-facing text for the celebratory message is in English."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/MainPage.tsx",
+          "path": "frontend/src/components/MoodCheckInCard.tsx",
           "operation": "modify",
-          "description": "Remove all HTMLAudioElement-related state/refs and side effects (audioRef, isPlaying, volume, track id, and the related useEffect hooks) and remove any play/pause handlers so no audio is created or controlled anywhere in MainPage."
+          "description": "Update the check-in success UI to show a brief, auto-dismissing celebratory message (e.g., a Sonner toast) only when the streak was extended; ensure the message is English-only and never shown for unauthenticated users, failed check-ins, or same-day re-check-ins."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Remove all music-related UI from MainPage (header control button and Music Controls panel) while keeping daily message and motto layout intact.",
+      "summary": "Determine whether a check-in extended the streak by comparing the mutation result to the previously cached/loaded streak value, and only trigger the celebratory message when the new value is greater.",
       "acceptanceCriteria": [
-        "The header no longer displays a play/pause music control button.",
-        "The page no longer shows the \"Music Controls\" section, track selector, volume slider, now-playing text, or attribution text.",
-        "The daily message and motto UI remain intact and centered appropriately without the removed music panel."
+        "If the previous streak value is N and the check-in mutation returns N+1, the celebratory message is triggered.",
+        "If the previous streak value is N and the check-in mutation returns N (e.g., already checked in today), the celebratory message is not triggered.",
+        "The streak display remains accurate after check-in (streak query is refreshed/invalidated as needed)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/MainPage.tsx",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Remove the header music Button and the entire \"Music Controls\" panel UI (including Select, Slider, now-playing status, and attribution). Update header/container layout classes as needed so the title/motto/message remain centered and visually balanced after the panel removal. Do not modify files under frontend/src/components/ui (compose them only). Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Eliminate the unused music track configuration dependency by removing all track list imports/usages from the frontend.",
-      "acceptanceCriteria": [
-        "MainPage no longer imports from \"frontend/src/music/tracks.ts\".",
-        "The frontend builds successfully with no unused-import or missing-module errors related to music tracks."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/MainPage.tsx",
-          "operation": "modify",
-          "description": "Remove the import of tracks from frontend/src/music/tracks.ts and delete any remaining references to tracks/currentTrack/currentTrackId so MainPage is fully independent of the music track list."
+          "description": "Update the mood check-in mutation flow to capture the previously cached/loaded streak value (from the existing React Query cache for the current user's streak), return it via mutation context, and ensure the streak query is invalidated/refetched so the streak display remains accurate."
         },
         {
-          "path": "frontend/src/music/tracks.ts",
-          "operation": "delete",
-          "description": "Delete the now-unused background music track configuration module once no frontend code imports it, ensuring the project builds without missing-module or unused-import errors."
+          "path": "frontend/src/components/MoodCheckInCard.tsx",
+          "operation": "modify",
+          "description": "Use the previous streak value (from the check-in mutation context) and the new streak returned by updateDailyTracker() to decide whether to trigger the celebratory message only when newStreak > previousStreak; ensure no celebratory message is shown when newStreak === previousStreak (already checked in today)."
         }
       ]
     }

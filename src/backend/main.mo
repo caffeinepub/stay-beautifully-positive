@@ -1,93 +1,126 @@
+import Map "mo:core/Map";
 import Time "mo:core/Time";
-import Array "mo:core/Array";
-import Int "mo:core/Int";
-import Nat "mo:core/Nat";
+import Principal "mo:core/Principal";
 import Runtime "mo:core/Runtime";
-import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
+import MixinStorage "blob-storage/Mixin";
+import MixinAuthorization "authorization/MixinAuthorization";
+import AccessControl "authorization/access-control";
 
 actor {
   include MixinStorage();
 
-  type InspirationalMessage = {
-    text : Text;
-    author : Text;
-    category : Text;
+  let accessControlState = AccessControl.initState();
+  include MixinAuthorization(accessControlState);
+
+  let dailyTrackers = Map.empty<Principal, DailyTracker>();
+  let userProfiles = Map.empty<Principal, UserProfile>();
+
+  type DailyTracker = {
+    streakCount : Nat;
+    lastCheckInDay : Int;
   };
 
-  let messages : [InspirationalMessage] = [
+  type DailyMessage = {
+    id : Nat;
+    message : Text;
+  };
+
+  public type UserProfile = {
+    name : Text;
+  };
+
+  let dailyMessages : [DailyMessage] = [
     {
-      text = "Believe you can and you’re halfway there.";
-      author = "Theodore Roosevelt";
-      category = "Motivation";
-    },
-    {
-      text = "You are enough just as you are.";
-      author = "Unknown";
-      category = "Affirmation";
-    },
-    {
-      text = "Every day is a new beginning. Take a deep breath, smile, and start again.";
-      author = "Unknown";
-      category = "Positivity";
-    },
-    {
-      text = "Your mind is a powerful thing. When you fill it with positive thoughts, your life will start to change.";
-      author = "Unknown";
-      category = "Mindfulness";
-    },
-    {
-      text = "Stay positive, work hard, make it happen.";
-      author = "Unknown";
-      category = "Motivation";
-    },
-    {
-      text = "You have within you right now, everything you need to deal with whatever the world can throw at you.";
-      author = "Brian Tracy";
-      category = "Strength";
-    },
-    {
-      text = "Happiness is not something ready made. It comes from your own actions.";
-      author = "Dalai Lama";
-      category = "Happiness";
-    },
-    {
-      text = "The only way to do great work is to love what you do.";
-      author = "Steve Jobs";
-      category = "Inspiration";
-    },
-    {
-      text = "You are capable of amazing things.";
-      author = "Unknown";
-      category = "Affirmation";
-    },
-    {
-      text = "Positive thinking will let you do everything better than negative thinking will.";
-      author = "Zig Ziglar";
-      category = "Positivity";
+      id = 1;
+      message = "Today is a new day. Embrace it with positivity!";
     },
   ];
 
-  public query ({ caller }) func getDailyMessage() : async InspirationalMessage {
-    let currentTime = Time.now();
-    let daysSinceEpoch = currentTime / (24 * 60 * 60 * 1_000_000_000);
-    let messageIndex = (daysSinceEpoch % messages.size()).toNat() % messages.size();
-    messages[messageIndex];
+  // Public query - accessible to all including guests
+  public query ({ caller }) func getDailyMessages() : async [DailyMessage] {
+    dailyMessages;
   };
 
-  public shared ({ caller }) func uploadBackgroundMusic(metadata : Storage.ExternalBlob) : async () {
-    Runtime.trap("This function is implemented by the blob-storage component, see initialize for details");
+  // Public query - accessible to all including guests
+  public query ({ caller }) func getDailyMessage() : async { message : Text } {
+    { message = "Stay Beautifully Positive" };
   };
 
-  public query ({ caller }) func getAllMessages() : async [InspirationalMessage] {
-    messages;
+  // Requires user authentication to upload content
+  public shared ({ caller }) func uploadBackgroundMusic(_metadata : Storage.ExternalBlob) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can upload background music");
+    };
   };
 
-  public query ({ caller }) func getMessageByCategory(category : Text) : async [InspirationalMessage] {
-    messages.filter(func(message) { message.category == category });
+  func getCurrentUTCDay() : Int {
+    Time.now() / 86_400_000_000_000;
   };
 
-  public query ({ caller }) func getAppMotto() : async Text {
-    "Stay Beautifully Positive";
+  // Users can only update their own daily tracker
+  public shared ({ caller }) func updateDailyTracker() : async Nat {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only authenticated users can update daily tracker");
+    };
+
+    let currentDay = getCurrentUTCDay();
+
+    var newStreak = 1;
+    switch (dailyTrackers.get(caller)) {
+      case (?tracker) {
+        if (tracker.lastCheckInDay == currentDay) {
+          return tracker.streakCount;
+        } else if (tracker.lastCheckInDay == currentDay - 1) {
+          newStreak := tracker.streakCount + 1;
+        };
+      };
+      case (_) {};
+    };
+
+    let updatedTracker = {
+      streakCount = newStreak;
+      lastCheckInDay = currentDay;
+    };
+
+    dailyTrackers.add(caller, updatedTracker);
+    newStreak;
+  };
+
+  // Public query - streaks are public information (leaderboard feature)
+  public query ({ caller }) func getUserStreak(user : Principal) : async Nat {
+    switch (dailyTrackers.get(user)) {
+      case (?tracker) { tracker.streakCount };
+      case (null) { 0 };
+    };
+  };
+
+  // Public query - accessible to all for leaderboard functionality
+  public query ({ caller }) func getAllStreaksNonEmpty() : async [(Principal, Nat)] {
+    dailyTrackers.toArray().map(func((p, t)) { (p, t.streakCount) });
+  };
+
+  // User profile management - users can view their own profile
+  public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can view profiles");
+    };
+    userProfiles.get(caller);
+  };
+
+  // Users can view their own profile, admins can view any profile
+  public query ({ caller }) func getUserProfile(user : Principal) : async ?UserProfile {
+    if (caller != user and not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Can only view your own profile");
+    };
+    userProfiles.get(user);
+  };
+
+  // Users can only save their own profile
+  public shared ({ caller }) func saveCallerUserProfile(profile : UserProfile) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can save profiles");
+    };
+    userProfiles.add(caller, profile);
   };
 };

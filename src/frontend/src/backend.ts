@@ -89,21 +89,28 @@ export class ExternalBlob {
         return this;
     }
 }
-export interface InspirationalMessage {
-    text: string;
-    author: string;
-    category: string;
+export interface _CaffeineStorageRefillInformation {
+    proposed_top_up_amount?: bigint;
 }
 export interface _CaffeineStorageCreateCertificateResult {
     method: string;
     blob_hash: string;
 }
+export interface DailyMessage {
+    id: bigint;
+    message: string;
+}
+export interface UserProfile {
+    name: string;
+}
 export interface _CaffeineStorageRefillResult {
     success?: boolean;
     topped_up_amount?: bigint;
 }
-export interface _CaffeineStorageRefillInformation {
-    proposed_top_up_amount?: bigint;
+export enum UserRole {
+    admin = "admin",
+    user = "user",
+    guest = "guest"
 }
 export interface backendInterface {
     _caffeineStorageBlobIsLive(hash: Uint8Array): Promise<boolean>;
@@ -112,13 +119,23 @@ export interface backendInterface {
     _caffeineStorageCreateCertificate(blobHash: string): Promise<_CaffeineStorageCreateCertificateResult>;
     _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
-    getAllMessages(): Promise<Array<InspirationalMessage>>;
-    getAppMotto(): Promise<string>;
-    getDailyMessage(): Promise<InspirationalMessage>;
-    getMessageByCategory(category: string): Promise<Array<InspirationalMessage>>;
-    uploadBackgroundMusic(metadata: ExternalBlob): Promise<void>;
+    _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
+    assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
+    getAllStreaksNonEmpty(): Promise<Array<[Principal, bigint]>>;
+    getCallerUserProfile(): Promise<UserProfile | null>;
+    getCallerUserRole(): Promise<UserRole>;
+    getDailyMessage(): Promise<{
+        message: string;
+    }>;
+    getDailyMessages(): Promise<Array<DailyMessage>>;
+    getUserProfile(user: Principal): Promise<UserProfile | null>;
+    getUserStreak(user: Principal): Promise<bigint>;
+    isCallerAdmin(): Promise<boolean>;
+    saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    updateDailyTracker(): Promise<bigint>;
+    uploadBackgroundMusic(_metadata: ExternalBlob): Promise<void>;
 }
-import type { ExternalBlob as _ExternalBlob, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
+import type { ExternalBlob as _ExternalBlob, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
@@ -205,35 +222,79 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getAllMessages(): Promise<Array<InspirationalMessage>> {
+    async _initializeAccessControlWithSecret(arg0: string): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.getAllMessages();
+                const result = await this.actor._initializeAccessControlWithSecret(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getAllMessages();
+            const result = await this.actor._initializeAccessControlWithSecret(arg0);
             return result;
         }
     }
-    async getAppMotto(): Promise<string> {
+    async assignCallerUserRole(arg0: Principal, arg1: UserRole): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.getAppMotto();
+                const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n8(this._uploadFile, this._downloadFile, arg1));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getAppMotto();
+            const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n8(this._uploadFile, this._downloadFile, arg1));
             return result;
         }
     }
-    async getDailyMessage(): Promise<InspirationalMessage> {
+    async getAllStreaksNonEmpty(): Promise<Array<[Principal, bigint]>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getAllStreaksNonEmpty();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getAllStreaksNonEmpty();
+            return result;
+        }
+    }
+    async getCallerUserProfile(): Promise<UserProfile | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCallerUserProfile();
+                return from_candid_opt_n10(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCallerUserProfile();
+            return from_candid_opt_n10(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getCallerUserRole(): Promise<UserRole> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getCallerUserRole();
+                return from_candid_UserRole_n11(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getCallerUserRole();
+            return from_candid_UserRole_n11(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getDailyMessage(): Promise<{
+        message: string;
+    }> {
         if (this.processError) {
             try {
                 const result = await this.actor.getDailyMessage();
@@ -247,37 +308,113 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getMessageByCategory(arg0: string): Promise<Array<InspirationalMessage>> {
+    async getDailyMessages(): Promise<Array<DailyMessage>> {
         if (this.processError) {
             try {
-                const result = await this.actor.getMessageByCategory(arg0);
+                const result = await this.actor.getDailyMessages();
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getMessageByCategory(arg0);
+            const result = await this.actor.getDailyMessages();
+            return result;
+        }
+    }
+    async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getUserProfile(arg0);
+                return from_candid_opt_n10(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getUserProfile(arg0);
+            return from_candid_opt_n10(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getUserStreak(arg0: Principal): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getUserStreak(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getUserStreak(arg0);
+            return result;
+        }
+    }
+    async isCallerAdmin(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.isCallerAdmin();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.isCallerAdmin();
+            return result;
+        }
+    }
+    async saveCallerUserProfile(arg0: UserProfile): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.saveCallerUserProfile(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.saveCallerUserProfile(arg0);
+            return result;
+        }
+    }
+    async updateDailyTracker(): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateDailyTracker();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateDailyTracker();
             return result;
         }
     }
     async uploadBackgroundMusic(arg0: ExternalBlob): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.uploadBackgroundMusic(await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg0));
+                const result = await this.actor.uploadBackgroundMusic(await to_candid_ExternalBlob_n13(this._uploadFile, this._downloadFile, arg0));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.uploadBackgroundMusic(await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg0));
+            const result = await this.actor.uploadBackgroundMusic(await to_candid_ExternalBlob_n13(this._uploadFile, this._downloadFile, arg0));
             return result;
         }
     }
 }
+function from_candid_UserRole_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
+    return from_candid_variant_n12(_uploadFile, _downloadFile, value);
+}
 function from_candid__CaffeineStorageRefillResult_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: __CaffeineStorageRefillResult): _CaffeineStorageRefillResult {
     return from_candid_record_n5(_uploadFile, _downloadFile, value);
+}
+function from_candid_opt_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
+    return value.length === 0 ? null : value[0];
 }
 function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {
     return value.length === 0 ? null : value[0];
@@ -297,8 +434,20 @@ function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint
         topped_up_amount: record_opt_to_undefined(from_candid_opt_n7(_uploadFile, _downloadFile, value.topped_up_amount))
     };
 }
-async function to_candid_ExternalBlob_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ExternalBlob): Promise<_ExternalBlob> {
+function from_candid_variant_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    admin: null;
+} | {
+    user: null;
+} | {
+    guest: null;
+}): UserRole {
+    return "admin" in value ? UserRole.admin : "user" in value ? UserRole.user : "guest" in value ? UserRole.guest : value;
+}
+async function to_candid_ExternalBlob_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ExternalBlob): Promise<_ExternalBlob> {
     return await _uploadFile(value);
+}
+function to_candid_UserRole_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
+    return to_candid_variant_n9(_uploadFile, _downloadFile, value);
 }
 function to_candid__CaffeineStorageRefillInformation_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _CaffeineStorageRefillInformation): __CaffeineStorageRefillInformation {
     return to_candid_record_n3(_uploadFile, _downloadFile, value);
@@ -314,6 +463,21 @@ function to_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
     return {
         proposed_top_up_amount: value.proposed_top_up_amount ? candid_some(value.proposed_top_up_amount) : candid_none()
     };
+}
+function to_candid_variant_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): {
+    admin: null;
+} | {
+    user: null;
+} | {
+    guest: null;
+} {
+    return value == UserRole.admin ? {
+        admin: null
+    } : value == UserRole.user ? {
+        user: null
+    } : value == UserRole.guest ? {
+        guest: null
+    } : value;
 }
 export interface CreateActorOptions {
     agent?: Agent;

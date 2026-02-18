@@ -19,10 +19,15 @@ export const _CaffeineStorageRefillResult = IDL.Record({
   'success' : IDL.Opt(IDL.Bool),
   'topped_up_amount' : IDL.Opt(IDL.Nat),
 });
-export const InspirationalMessage = IDL.Record({
-  'text' : IDL.Text,
-  'author' : IDL.Text,
-  'category' : IDL.Text,
+export const UserRole = IDL.Variant({
+  'admin' : IDL.Null,
+  'user' : IDL.Null,
+  'guest' : IDL.Null,
+});
+export const UserProfile = IDL.Record({ 'name' : IDL.Text });
+export const DailyMessage = IDL.Record({
+  'id' : IDL.Nat,
+  'message' : IDL.Text,
 });
 export const ExternalBlob = IDL.Vec(IDL.Nat8);
 
@@ -53,14 +58,30 @@ export const idlService = IDL.Service({
       [],
     ),
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
-  'getAllMessages' : IDL.Func([], [IDL.Vec(InspirationalMessage)], ['query']),
-  'getAppMotto' : IDL.Func([], [IDL.Text], ['query']),
-  'getDailyMessage' : IDL.Func([], [InspirationalMessage], ['query']),
-  'getMessageByCategory' : IDL.Func(
-      [IDL.Text],
-      [IDL.Vec(InspirationalMessage)],
+  '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+  'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'getAllStreaksNonEmpty' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat))],
       ['query'],
     ),
+  'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+  'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getDailyMessage' : IDL.Func(
+      [],
+      [IDL.Record({ 'message' : IDL.Text })],
+      ['query'],
+    ),
+  'getDailyMessages' : IDL.Func([], [IDL.Vec(DailyMessage)], ['query']),
+  'getUserProfile' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Opt(UserProfile)],
+      ['query'],
+    ),
+  'getUserStreak' : IDL.Func([IDL.Principal], [IDL.Nat], ['query']),
+  'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'updateDailyTracker' : IDL.Func([], [IDL.Nat], []),
   'uploadBackgroundMusic' : IDL.Func([ExternalBlob], [], []),
 });
 
@@ -78,11 +99,13 @@ export const idlFactory = ({ IDL }) => {
     'success' : IDL.Opt(IDL.Bool),
     'topped_up_amount' : IDL.Opt(IDL.Nat),
   });
-  const InspirationalMessage = IDL.Record({
-    'text' : IDL.Text,
-    'author' : IDL.Text,
-    'category' : IDL.Text,
+  const UserRole = IDL.Variant({
+    'admin' : IDL.Null,
+    'user' : IDL.Null,
+    'guest' : IDL.Null,
   });
+  const UserProfile = IDL.Record({ 'name' : IDL.Text });
+  const DailyMessage = IDL.Record({ 'id' : IDL.Nat, 'message' : IDL.Text });
   const ExternalBlob = IDL.Vec(IDL.Nat8);
   
   return IDL.Service({
@@ -112,14 +135,30 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
-    'getAllMessages' : IDL.Func([], [IDL.Vec(InspirationalMessage)], ['query']),
-    'getAppMotto' : IDL.Func([], [IDL.Text], ['query']),
-    'getDailyMessage' : IDL.Func([], [InspirationalMessage], ['query']),
-    'getMessageByCategory' : IDL.Func(
-        [IDL.Text],
-        [IDL.Vec(InspirationalMessage)],
+    '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+    'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'getAllStreaksNonEmpty' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat))],
         ['query'],
       ),
+    'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+    'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getDailyMessage' : IDL.Func(
+        [],
+        [IDL.Record({ 'message' : IDL.Text })],
+        ['query'],
+      ),
+    'getDailyMessages' : IDL.Func([], [IDL.Vec(DailyMessage)], ['query']),
+    'getUserProfile' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(UserProfile)],
+        ['query'],
+      ),
+    'getUserStreak' : IDL.Func([IDL.Principal], [IDL.Nat], ['query']),
+    'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'updateDailyTracker' : IDL.Func([], [IDL.Nat], []),
     'uploadBackgroundMusic' : IDL.Func([ExternalBlob], [], []),
   });
 };

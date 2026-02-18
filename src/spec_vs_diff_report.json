@@ -1,37 +1,23 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-18T13:26:36.898Z",
-  "summary": "MainPage appears to have been refactored to remove the music UI and associated logic, but the diff also includes edits to the music track configuration file and project metadata files that were not explicitly requested.",
+  "generatedAt": "2026-02-18T14:03:52.872Z",
+  "summary": "REQ-1 and REQ-2 appear implemented on the frontend via toast notifications triggered only when a check-in succeeds and the returned streak value increases versus the previously cached streak. The celebratory toast is time-limited and streak data is invalidated to keep the display accurate. Some additional (non-requested) toast behaviors were also introduced.",
   "missing_requirements": [],
   "hallucinated_features": [
     {
-      "description": "Modified the music track configuration file despite the request only requiring removal of MainPage usage/imports of the track list (not changing the track configuration itself).",
-      "reason": "The BuildRequest does not ask to change the contents of the track list, only to eliminate its usage/imports from the MainPage/frontend dependency chain.",
+      "description": "Added additional non-celebratory toast messages for various states (e.g., unauthenticated attempt, missing mood selection, generic 'Check-in successful' when streak did not increase, and treating errors as 'Already checked in today').",
+      "reason": "The BuildRequest only asks for a time-limited celebratory message when the streak is extended and for the comparison logic; it does not request new user-facing toast flows for other scenarios.",
       "evidence": [
-        "frontend/src/music/tracks.ts"
-      ]
-    },
-    {
-      "description": "Updated repository metadata/state files describing features/requests (project_state.json).",
-      "reason": "The BuildRequest is about removing music playback logic and UI; it does not request changes to project tracking metadata.",
-      "evidence": [
-        "project_state.json"
-      ]
-    },
-    {
-      "description": "Updated a generated/frontend summary file (frontend-file-summaries.txt).",
-      "reason": "The BuildRequest does not request updating documentation/summary artifacts.",
-      "evidence": [
-        "frontend-file-summaries.txt"
+        "frontend/src/components/MoodCheckInCard.tsx"
       ]
     }
   ],
-  "confidence": 0.62,
+  "confidence": 0.86,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/src/music/tracks.ts",
-    "frontend/src/pages/MainPage.tsx",
+    "frontend/src/components/MoodCheckInCard.tsx",
+    "frontend/src/hooks/useQueries.ts",
     "project_state.json"
   ]
 }

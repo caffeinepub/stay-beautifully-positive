@@ -1,8 +1,13 @@
 {
-  "frontend/src/App.tsx": "Main application component that wraps the app with ThemeProvider and renders the MainPage with toast notifications.",
-  "frontend/src/pages/MainPage.tsx": "Single-page mindfulness application featuring daily inspirational quotes with calming gradient background and the \"Stay Beautifully Positive\" motto prominently displayed, with all music functionality removed.",
-  "frontend/src/hooks/useQueries.ts": "React Query hooks for fetching daily messages, app motto, and all messages from the backend with appropriate caching strategies.",
+  "frontend/src/App.tsx": "Main application component that provides QueryClient, ThemeProvider, and renders MainPage with toast notifications using a single QueryClient instance.",
+  "frontend/src/pages/MainPage.tsx": "Main application page featuring daily inspirational quotes, mood check-in card, streak counter card, login button in header, and profile setup dialog for new users.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for fetching daily messages, managing user streak info, handling mood check-ins with mutations that capture previous streak values via onMutate context, and managing user profiles with proper authentication guards and cache invalidation.",
   "frontend/src/index.css": "Custom CSS with OKLCH-based calming color palette (sky blue, lavender, rose), custom shadow utilities, and gentle animation keyframes for the mindfulness theme.",
   "frontend/tailwind.config.js": "Tailwind configuration extended with serif font family for elegant quote display and maintaining the custom design system.",
-  "frontend/src/music/tracks.ts": "Configuration file defining available upbeat/positive royalty-free music tracks with id, title, source path, and attribution metadata."
+  "frontend/src/music/tracks.ts": "Configuration file defining available upbeat/positive royalty-free music tracks with id, title, source path, and attribution metadata.",
+  "frontend/src/main.tsx": "Application entry point that renders the root component with InternetIdentityProvider wrapper, delegating QueryClient setup to App.tsx to avoid duplicate providers.",
+  "frontend/src/components/LoginButton.tsx": "Internet Identity login/logout button component with loading states, error handling, and query cache clearing on logout.",
+  "frontend/src/components/StreakCard.tsx": "Displays the user's current check-in streak count with loading, error, and signed-out states, including retry functionality.",
+  "frontend/src/components/MoodCheckInCard.tsx": "Mood selection and daily check-in UI with four mood options, authentication guards, and celebratory toast notifications that only appear when the streak is extended (newStreak > previousStreak), with auto-dismissing success messages.",
+  "frontend/src/components/ProfileSetupDialog.tsx": "Modal dialog for first-time user profile setup that prompts authenticated users to enter their name with form validation and error handling."
 }

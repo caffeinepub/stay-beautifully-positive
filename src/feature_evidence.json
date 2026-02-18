@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-all-background-music-playback-logic-from-the-main-page-including-the-htmlaudioelement-creation-play-pause-handling-volume-handling-and-track-switching-side-effects",
-      "featureTitle": "Remove all background music playback logic from the main page, including the HTMLAudioElement creation, play/pause handling, volume handling, and track-switching side effects.",
+      "featureId": "feature-show-a-small-time-limited-celebratory-message-in-the-ui-when-a-signed-in-user-successfully-completes-a-daily-check-in-and-their-streak-increases-i-e-they-kept-their-streak-going",
+      "featureTitle": "Show a small, time-limited celebratory message in the UI when a signed-in user successfully completes a daily check-in and their streak increases (i.e., they kept their streak going).",
       "files": [
-        "frontend/src/pages/MainPage.tsx"
+        "frontend/src/components/MoodCheckInCard.tsx"
       ],
       "components": [
         "blob-storage@4.0.0",
@@ -13,7 +13,8 @@
         "shadcn-ui@1.0.0",
         "build-template-react@1.0.0",
         "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0"
       ],
       "testIds": [
         "REQ-1"
@@ -21,10 +22,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-remove-all-music-related-ui-from-the-main-page-including-the-header-play-pause-button-and-the-music-controls-panel-track-selection-volume-slider-now-playing-status-and-attribution",
-      "featureTitle": "Remove all music-related UI from the main page, including the header play/pause button and the \"Music Controls\" panel (track selection, volume slider, now-playing status, and attribution).",
+      "featureId": "feature-update-the-check-in-success-flow-to-determine-whether-the-streak-was-extended-by-comparing-the-new-streak-value-returned-by-updatedailytracker-with-the-previously-cached-loaded-streak-value-and-trigger-the-celebratory-message-only-when-the-new-value-is-greater-than-the-previous-value",
+      "featureTitle": "Update the check-in success flow to determine whether the streak was extended by comparing the new streak value returned by updateDailyTracker() with the previously cached/loaded streak value, and trigger the celebratory message only when the new value is greater than the previous value.",
       "files": [
-        "frontend/src/pages/MainPage.tsx"
+        "frontend/src/components/MoodCheckInCard.tsx",
+        "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
         "blob-storage@4.0.0",
@@ -32,30 +34,11 @@
         "shadcn-ui@1.0.0",
         "build-template-react@1.0.0",
         "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0"
       ],
       "testIds": [
         "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-remove-the-unused-music-track-configuration-dependency-from-the-frontend-by-eliminating-usage-imports-of-the-track-list-used-for-background-music",
-      "featureTitle": "Remove the unused music track configuration dependency from the frontend by eliminating usage/imports of the track list used for background music.",
-      "files": [
-        "frontend/src/music/tracks.ts",
-        "frontend/src/pages/MainPage.tsx"
-      ],
-      "components": [
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
       ],
       "confidence": "high"
     }

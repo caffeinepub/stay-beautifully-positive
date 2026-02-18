@@ -1,71 +1,55 @@
 {
   "kind": "build_request",
-  "title": "Remove background music and music controls",
+  "title": "Add celebratory message when a user extends their streak",
   "projectName": "Stay Beautifully Positive",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Remove all background music playback logic from the main page, including the HTMLAudioElement creation, play/pause handling, volume handling, and track-switching side effects.",
+      "text": "Show a small, time-limited celebratory message in the UI when a signed-in user successfully completes a daily check-in and their streak increases (i.e., they kept their streak going).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-11"
+          "msg-4"
         ],
         "quotes": [
-          "Remove the music, it isn't playing correctly."
+          "That would be amazing."
         ]
       },
       "acceptanceCriteria": [
-        "MainPage renders and functions without creating or controlling an Audio element.",
-        "No audio starts playing (or attempts to play) when the app loads or when interacting with the page.",
-        "There are no console errors related to audio playback (e.g., 'Audio playback failed')."
+        "After a successful check-in, the app displays a short celebratory message that is specifically tied to the streak being extended (not just streakCount > 0).",
+        "The celebratory message automatically disappears after a short duration (e.g., a few seconds) without requiring user interaction.",
+        "The celebratory message is not shown when the user is not authenticated, when the check-in fails, or when the user has already checked in for the current UTC day.",
+        "All user-facing text for the celebratory message is in English."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Remove all music-related UI from the main page, including the header play/pause button and the \"Music Controls\" panel (track selection, volume slider, now-playing status, and attribution).",
+      "text": "Update the check-in success flow to determine whether the streak was extended by comparing the new streak value returned by updateDailyTracker() with the previously cached/loaded streak value, and trigger the celebratory message only when the new value is greater than the previous value.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-11"
+          "msg-4"
         ],
         "quotes": [
-          "Remove the music, it isn't playing correctly."
+          "That would be amazing."
         ]
       },
       "acceptanceCriteria": [
-        "The header no longer displays a play/pause music control button.",
-        "The page no longer shows the \"Music Controls\" section, track selector, volume slider, now-playing text, or attribution text.",
-        "The daily message and motto UI remain intact and centered appropriately without the removed music panel."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Remove the unused music track configuration dependency from the frontend by eliminating usage/imports of the track list used for background music.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-11"
-        ],
-        "quotes": [
-          "Remove the music, it isn't playing correctly."
-        ]
-      },
-      "acceptanceCriteria": [
-        "MainPage no longer imports from \"frontend/src/music/tracks.ts\".",
-        "The frontend builds successfully with no unused-import or missing-module errors related to music tracks."
+        "If the previous streak value is N and the check-in mutation returns N+1, the celebratory message is triggered.",
+        "If the previous streak value is N and the check-in mutation returns N (e.g., already checked in today), the celebratory message is not triggered.",
+        "The streak display remains accurate after check-in (streak query is refreshed/invalidated as needed)."
       ]
     }
   ],
   "constraints": [
-    "Do not modify files under frontend/src/components/ui (compose them only).",
-    "Do not edit any files listed in frontend.immutablePaths in SYSTEM_CONTEXT."
+    "Do not edit any files under frontend/src/components/ui or any paths listed in frontend.immutablePaths in SYSTEM_CONTEXT.",
+    "Keep backend logic in a single actor (backend/main.mo); do not introduce additional backend services."
   ],
   "nonGoals": [
-    "Fixing or debugging audio playback issues.",
-    "Adding new audio tracks, streaming, or alternate audio implementations.",
-    "Changing the app’s non-music functionality (daily message, motto, theming) beyond layout adjustments needed after removing music UI."
+    "Do not add new authentication providers (Internet Identity only).",
+    "Do not add leaderboards, social sharing, notifications, or any new backend data models unrelated to the celebratory message.",
+    "Do not change the streak calculation rules in the backend (only react to the streak value returned)."
   ],
   "imageRequirements": {
     "required": [],

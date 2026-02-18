@@ -1,11 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Remove background music playback and all music controls from the main page.
+**Goal:** Show a brief celebratory message when an authenticated user completes a daily check-in that extends their streak.
 
 **Planned changes:**
-- Delete all background audio playback logic from the main page (Audio element creation, play/pause, volume, and track-switching side effects).
-- Remove all music-related UI from the main page (header play/pause control and the full “Music Controls” panel including track selection, volume, now-playing text, and attribution).
-- Eliminate dependency on the music track list by removing imports/usages of `frontend/src/music/tracks.ts`.
+- Update the check-in success flow to compare the newly returned streak value from `updateDailyTracker()` with the previously cached/loaded streak value.
+- Trigger a small, English celebratory message only when the new streak value is greater than the previous value (streak extended).
+- Auto-dismiss the celebratory message after a short duration.
+- Ensure the streak display remains accurate after check-in by refreshing/invalidating the streak query as needed.
 
-**User-visible outcome:** The app loads and runs with no background music and no music controls visible; the daily message and motto remain intact and appropriately centered.
+**User-visible outcome:** After a successful daily check-in that increases their streak, signed-in users briefly see a celebratory message that disappears automatically; no message appears for failed check-ins, unauthenticated users, or same-day repeat check-ins.

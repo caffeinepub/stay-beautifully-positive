@@ -1,17 +1,42 @@
 import { useEffect, useState } from 'react';
-import { useDailyMessage, useAppMotto } from '../hooks/useQueries';
+import { useDailyMessage, useCallerUserProfile } from '../hooks/useQueries';
+import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { SiCaffeine } from 'react-icons/si';
+import { RefreshCw } from 'lucide-react';
+import { toast } from 'sonner';
+import LoginButton from '../components/LoginButton';
+import StreakCard from '../components/StreakCard';
+import MoodCheckInCard from '../components/MoodCheckInCard';
+import ProfileSetupDialog from '../components/ProfileSetupDialog';
 
 export default function MainPage() {
-    const { data: dailyMessage, isLoading: messageLoading } = useDailyMessage();
-    const { data: motto, isLoading: mottoLoading } = useAppMotto();
+    const { data: dailyMessage, isLoading: messageLoading, error: messageError, refetch } = useDailyMessage();
+    const { identity } = useInternetIdentity();
+    const { data: userProfile, isLoading: profileLoading, isFetched: profileFetched } = useCallerUserProfile();
     const [showContent, setShowContent] = useState(false);
+
+    const isAuthenticated = !!identity;
+    const showProfileSetup = isAuthenticated && !profileLoading && profileFetched && userProfile === null;
 
     useEffect(() => {
         const timer = setTimeout(() => setShowContent(true), 300);
         return () => clearTimeout(timer);
     }, []);
+
+    // Show toast on error (only once per error)
+    useEffect(() => {
+        if (messageError) {
+            toast.error('Failed to load daily message', {
+                description: 'Please try again or check your connection.',
+            });
+        }
+    }, [messageError]);
+
+    const handleRetry = () => {
+        refetch();
+    };
 
     return (
         <div className="min-h-screen relative overflow-hidden">
@@ -25,11 +50,14 @@ export default function MainPage() {
                 <div className="absolute inset-0 bg-gradient-to-br from-calm-sky/40 via-calm-lavender/30 to-calm-rose/40" />
             </div>
 
+            {/* Profile Setup Dialog */}
+            <ProfileSetupDialog open={showProfileSetup} />
+
             {/* Main Content */}
             <main className="relative z-10 min-h-screen flex flex-col">
                 {/* Header */}
                 <header className="w-full py-6 px-4 sm:px-6 lg:px-8">
-                    <div className="max-w-7xl mx-auto flex justify-center items-center">
+                    <div className="max-w-7xl mx-auto flex justify-between items-center">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-calm-sky to-calm-lavender flex items-center justify-center shadow-glow">
                                 <span className="text-white text-xl font-bold">✨</span>
@@ -38,27 +66,47 @@ export default function MainPage() {
                                 Stay Beautifully Positive
                             </h1>
                         </div>
+                        <LoginButton />
                     </div>
                 </header>
 
                 {/* Center Content */}
                 <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
-                    <div className={`w-full max-w-3xl transition-all duration-1000 ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+                    <div className={`w-full max-w-5xl transition-all duration-1000 ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
                         {/* Motto Card */}
                         <div className="text-center mb-12 animate-gentle-pulse">
                             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-calm-sky via-calm-lavender to-calm-rose bg-clip-text text-transparent mb-4 leading-tight">
-                                {mottoLoading ? 'Loading...' : motto}
+                                Stay Beautifully Positive
                             </h2>
                             <div className="h-1 w-24 mx-auto bg-gradient-to-r from-calm-sky via-calm-lavender to-calm-rose rounded-full shadow-glow" />
                         </div>
 
                         {/* Daily Message Card */}
-                        <Card className="bg-white/70 backdrop-blur-md border-white/40 shadow-2xl p-8 sm:p-12 rounded-3xl transition-all duration-500 hover:shadow-glow-lg">
+                        <Card className="bg-white/70 backdrop-blur-md border-white/40 shadow-2xl p-8 sm:p-12 rounded-3xl transition-all duration-500 hover:shadow-glow-lg mb-8">
                             {messageLoading ? (
                                 <div className="text-center space-y-4">
                                     <div className="h-6 bg-calm-sky/20 rounded-full w-3/4 mx-auto animate-pulse" />
                                     <div className="h-6 bg-calm-sky/20 rounded-full w-full animate-pulse" />
                                     <div className="h-6 bg-calm-sky/20 rounded-full w-5/6 mx-auto animate-pulse" />
+                                </div>
+                            ) : messageError ? (
+                                <div className="text-center space-y-4">
+                                    <div className="inline-block px-4 py-2 bg-destructive/10 rounded-full">
+                                        <p className="text-sm font-medium text-destructive uppercase tracking-wider">
+                                            Error Loading Message
+                                        </p>
+                                    </div>
+                                    <p className="text-calm-deep/60">
+                                        We couldn't load today's inspiration. Please try again.
+                                    </p>
+                                    <Button 
+                                        onClick={handleRetry}
+                                        variant="outline"
+                                        className="mt-4"
+                                    >
+                                        <RefreshCw className="w-4 h-4 mr-2" />
+                                        Retry
+                                    </Button>
                                 </div>
                             ) : dailyMessage ? (
                                 <div className="space-y-6 text-center">
@@ -87,6 +135,12 @@ export default function MainPage() {
                                 <p className="text-center text-calm-deep/60">No message available</p>
                             )}
                         </Card>
+
+                        {/* Mood Check-In and Streak Cards */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <MoodCheckInCard />
+                            <StreakCard />
+                        </div>
                     </div>
                 </div>
 

@@ -10,12 +10,12 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface DailyMessage { 'id' : bigint, 'message' : string }
 export type ExternalBlob = Uint8Array;
-export interface InspirationalMessage {
-  'text' : string,
-  'author' : string,
-  'category' : string,
-}
+export interface UserProfile { 'name' : string }
+export type UserRole = { 'admin' : null } |
+  { 'user' : null } |
+  { 'guest' : null };
 export interface _CaffeineStorageCreateCertificateResult {
   'method' : string,
   'blob_hash' : string,
@@ -43,10 +43,18 @@ export interface _SERVICE {
     _CaffeineStorageRefillResult
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
-  'getAllMessages' : ActorMethod<[], Array<InspirationalMessage>>,
-  'getAppMotto' : ActorMethod<[], string>,
-  'getDailyMessage' : ActorMethod<[], InspirationalMessage>,
-  'getMessageByCategory' : ActorMethod<[string], Array<InspirationalMessage>>,
+  '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'getAllStreaksNonEmpty' : ActorMethod<[], Array<[Principal, bigint]>>,
+  'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
+  'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getDailyMessage' : ActorMethod<[], { 'message' : string }>,
+  'getDailyMessages' : ActorMethod<[], Array<DailyMessage>>,
+  'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'getUserStreak' : ActorMethod<[Principal], bigint>,
+  'isCallerAdmin' : ActorMethod<[], boolean>,
+  'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'updateDailyTracker' : ActorMethod<[], bigint>,
   'uploadBackgroundMusic' : ActorMethod<[ExternalBlob], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
